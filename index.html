@@ -13,7 +13,7 @@
     .row{display:flex;gap:10px;flex-wrap:wrap}
     .col{flex:1 1 200px;min-width:160px}
     label{font-size:13px;color:#444}
-    input{width:100%;padding:8px;border:1px solid #ddd;border-radius:6px}
+    input,select{width:100%;padding:8px;border:1px solid #ddd;border-radius:6px}
     .btn{padding:8px 14px;border:none;border-radius:8px;font-weight:600;cursor:pointer;margin:4px}
     .btn-primary{background:#169873;color:white}
     .btn-secondary{background:#999;color:white}
@@ -96,7 +96,16 @@
       <h3>४) कार्यकारी समिती</h3>
       <div class="row">
         <div class="col"><input id="comName" placeholder="नाव"></div>
-        <div class="col"><input id="comRole" placeholder="पद"></div>
+        <div class="col">
+          <select id="comRole">
+            <option value="">पद निवडा</option>
+            <option>अध्यक्ष (President)</option>
+            <option>उपाध्यक्ष (Vice President)</option>
+            <option>खजिनदार (Treasurer)</option>
+            <option>सचिव (Secretary)</option>
+            <option>कार्याध्यक्ष (Executive President)</option>
+          </select>
+        </div>
         <div class="col"><button class="btn btn-primary" onclick="addCommittee()">जोडा</button></div>
       </div>
       <div class="list" id="committeeList"></div>
@@ -143,7 +152,7 @@
       <p id="rDonor"></p>
 
       <h4 style="margin-top:10px">खर्च यादी</h4>
-      <table id="reportExpenses"><thead><tr><th>खर्च</th><th>रक्कम १</th><th>रक्कम २</th><th>एकूण</th></tr></thead><tbody></tbody></table>
+      <table id="reportExpenses"><thead><tr><th>खर्च</th><th>रक्कम</th></tr></thead><tbody></tbody></table>
 
       <!-- Executive Committee in report -->
       <h4 style="margin-top:20px">कार्यकारी समिती</h4>
@@ -201,7 +210,7 @@
       if(!n||(a1+a2)<=0) return;
       data.expenses.push({name:n,a1,a2,total:a1+a2});
       $("expenseName").value="";$("expenseAmt1").value="";$("expenseAmt2").value="";
-      $("expensesList").innerHTML=data.expenses.map(e=>`<div class="row-item">${e.name} = ₹${e.total.toFixed(2)} (${e.a1}+${e.a2})</div>`).join("");
+      $("expensesList").innerHTML=data.expenses.map(e=>`<div class="row-item">${e.name} = ₹${e.total.toFixed(2)}</div>`).join("");
     }
 
     function addCommittee(){
@@ -246,7 +255,7 @@
       $("reportMoto").textContent=data.group.moto?("घोषवाक्य: "+data.group.moto):"";
       $("rDonor").textContent=data.group.donor||"-";
 
-      $("reportExpenses").querySelector("tbody").innerHTML=data.expenses.map(e=>`<tr><td>${e.name}</td><td>${e.a1.toFixed(2)}</td><td>${e.a2.toFixed(2)}</td><td>${e.total.toFixed(2)}</td></tr>`).join("");
+      $("reportExpenses").querySelector("tbody").innerHTML=data.expenses.map(e=>`<tr><td>${e.name}</td><td>${e.total.toFixed(2)}</td></tr>`).join("");
 
       $("reportCommittee").querySelector("tbody").innerHTML=data.committee.map(c=>`<tr><td>${c.name}</td><td>${c.role}</td></tr>`).join("");
 
@@ -265,3 +274,4 @@
   </script>
 </body>
 </html>
+
