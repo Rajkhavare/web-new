@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>गणपती मंडळ व्यवस्थापन प्रणाली</title>
+  <style>
+    body{margin:0;font-family:"Noto Sans Devanagari",sans-serif;background:#fffaf3;color:#2f2f2f}
+    header{background:linear-gradient(90deg,#ff7043,#ff9800);color:white;padding:18px;text-align:center;font-weight:800;font-size:26px;box-shadow:0 4px 12px rgba(0,0,0,.2)}
+    @media print{header{display:none}}
+    .container{max-width:1100px;margin:0 auto;padding:18px}
+    .card{background:#fff;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,.1);padding:16px;margin-bottom:14px}
+    .row{display:flex;gap:10px;flex-wrap:wrap}
+    .col{flex:1 1 200px;min-width:160px}
+    label{font-size:13px;color:#444}
+    input{width:100%;padding:8px;border:1px solid #ddd;border-radius:6px}
+    .btn{padding:8px 14px;border:none;border-radius:8px;font-weight:600;cursor:pointer;margin:4px}
+    .btn-primary{background:#169873;color:white}
+    .btn-secondary{background:#999;color:white}
+    .list{margin-top:10px}
+    .row-item{padding:8px;border:1px solid #eee;border-radius:6px;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center}
+    .summary{display:flex;gap:12px;flex-wrap:wrap;margin:12px 0}
+    .summary .box{flex:1 1 200px;background:#fffef8;border:1px solid #f1d9a6;border-radius:10px;padding:10px;text-align:center}
+    .summary .num{font-size:20px;font-weight:700}
+    table{width:100%;border-collapse:collapse;margin-top:10px}
+    th,td{border:1px solid #e8dcc0;padding:8px;text-align:left}
+    th{background:#fff3d4}
+    .report-title{text-align:center;font-size:28px;font-weight:800;color:#b71c1c;margin:12px 0}
+    .report-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+    .report-header img{max-height:80px}
+    .signatures{display:flex;justify-content:space-around;flex-wrap:wrap;margin-top:40px}
+    .sign-box{text-align:center;width:180px;margin:10px}
+    .sign-line{margin-top:60px;border-top:1px solid #333}
+    @media print{.no-print{display:none}}
+  </style>
+</head>
+<body>
+  <header>गणपती मंडळ व्यवस्थापन प्रणाली</header>
+  <div class="container">
+
+    <!-- Info -->
+    <section id="info" class="card">
+      <h3>१) मंडळ माहिती</h3>
+      <div class="row">
+        <div class="col"><label>मंडळाचे नाव</label><input id="groupName"></div>
+        <div class="col"><label>चालू वर्ष</label><input id="groupYear" type="number"></div>
+        <div class="col"><label>स्थापनेचा वर्ष</label><input id="estYear" type="number"></div>
+        <div class="col"><label>मागील वर्षाची शिल्लक</label><input id="prevBalance" type="number"></div>
+      </div>
+      <div class="row">
+        <div class="col"><label>घोषवाक्य </label><input id="moto"></div>
+        <div class="col"><label>गणपती मूर्ती देनगिदार</label><input id="donor"></div>
+      </div>
+      <div class="row">
+        <div class="col"><label>Group Logo</label><input id="groupLogo" type="file" accept="image/*"></div>
+        <div class="col"><label>Ganpati Photo</label><input id="ganpatiLogo" type="file" accept="image/*"></div>
+      </div>
+      <div class="no-print">
+        <button class="btn btn-primary" onclick="saveInfo();show('members')">पुढे</button>
+      </div>
+    </section>
+
+    <!-- Members -->
+    <section id="members" class="card" style="display:none">
+      <h3>२) सदस्य</h3>
+      <div class="row">
+        <div class="col"><input id="memberName" placeholder="नाव"></div>
+        <div class="col"><input id="memberAmount" type="number" placeholder="वर्गणी ₹"></div>
+        <div class="col"><button class="btn btn-primary" onclick="addMember()">जोडा</button></div>
+      </div>
+      <div class="list" id="membersList"></div>
+      <div class="no-print">
+        <button class="btn btn-secondary" onclick="show('info')">मागे</button>
+        <button class="btn btn-primary" onclick="show('expenses')">पुढे</button>
+      </div>
+    </section>
+
+    <!-- Expenses -->
+    <section id="expenses" class="card" style="display:none">
+      <h3>३) खर्च</h3>
+      <div class="row">
+        <div class="col"><input id="expenseName" placeholder="खर्चाचे नाव"></div>
+        <div class="col"><input id="expenseAmt1" type="number" placeholder="रक्कम १"></div>
+        <div class="col"><input id="expenseAmt2" type="number" placeholder="रक्कम २"></div>
+        <div class="col"><button class="btn btn-primary" onclick="addExpense()">जोडा</button></div>
+      </div>
+      <div class="list" id="expensesList"></div>
+      <div class="no-print">
+        <button class="btn btn-secondary" onclick="show('members')">मागे</button>
+        <button class="btn btn-primary" onclick="show('committee')">पुढे</button>
+      </div>
+    </section>
+
+    <!-- Executive Committee -->
+    <section id="committee" class="card" style="display:none">
+      <h3>४) कार्यकारी समिती</h3>
+      <div class="row">
+        <div class="col"><input id="comName" placeholder="नाव"></div>
+        <div class="col"><input id="comRole" placeholder="पद"></div>
+        <div class="col"><button class="btn btn-primary" onclick="addCommittee()">जोडा</button></div>
+      </div>
+      <div class="list" id="committeeList"></div>
+      <div class="no-print">
+        <button class="btn btn-secondary" onclick="show('expenses')">मागे</button>
+        <button class="btn btn-primary" onclick="show('signatures')">पुढे</button>
+      </div>
+    </section>
+
+    <!-- Signatures -->
+    <section id="signatures" class="card" style="display:none">
+      <h3>५) स्वाक्षरी पदे</h3>
+      <div class="row">
+        <div class="col"><input id="signRole" placeholder="पद लिहा (उदा. अध्यक्ष)"></div>
+        <div class="col"><button class="btn btn-primary" onclick="addSignRole()">जोडा</button></div>
+      </div>
+      <div class="list" id="signRolesList"></div>
+      <div class="no-print">
+        <button class="btn btn-secondary" onclick="show('committee')">मागे</button>
+        <button class="btn btn-primary" onclick="renderReport();show('report')">अहवाल पहा</button>
+      </div>
+    </section>
+
+    <!-- Report -->
+    <section id="report" class="card" style="display:none">
+      <div class="report-header">
+        <img id="outGroupLogo" style="display:none">
+        <div>
+          <div class="report-title" id="reportTitle"></div>
+          <div id="reportMeta"></div>
+          <div id="reportMoto" style="font-style:italic;margin-top:4px;"></div>
+        </div>
+        <img id="outGanpatiLogo" style="display:none">
+      </div>
+
+      <div class="summary">
+        <div class="box"><div>मागील वर्षाची शिल्लक</div><div class="num" id="sumPrev">₹0</div></div>
+        <div class="box"><div>एकूण संकलन</div><div class="num" id="sumColl">₹0</div></div>
+        <div class="box"><div>एकूण खर्च</div><div class="num" id="sumExp">₹0</div></div>
+        <div class="box"><div>निव्वळ शिल्लक</div><div class="num" id="bal">₹0</div></div>
+      </div>
+
+      <h4>गणपती मूर्ती देनगिदार</h4>
+      <p id="rDonor"></p>
+
+      <h4 style="margin-top:10px">खर्च यादी</h4>
+      <table id="reportExpenses"><thead><tr><th>खर्च</th><th>रक्कम १</th><th>रक्कम २</th><th>एकूण</th></tr></thead><tbody></tbody></table>
+
+      <!-- Executive Committee in report -->
+      <h4 style="margin-top:20px">कार्यकारी समिती</h4>
+      <table id="reportCommittee"><thead><tr><th>नाव</th><th>पद</th></tr></thead><tbody></tbody></table>
+
+      <!-- Signature Section -->
+      <h4 style="margin-top:20px">स्वाक्षऱ्या</h4>
+      <div class="signatures" id="signSection"></div>
+
+      <div class="no-print" style="margin-top:10px">
+        <button class="btn btn-secondary" onclick="show('signatures')">मागे</button>
+        <button class="btn btn-primary" onclick="window.print()">Print / PDF</button>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    let data={group:{},members:[],expenses:[],committee:[],signRoles:[]};
+    const $=id=>document.getElementById(id);
+
+    function show(step){
+      ["info","members","expenses","committee","signatures","report"].forEach(s=>{
+        $(s).style.display = (s===step)?'':'none';
+      });
+    }
+
+    function saveInfo(){
+      data.group={
+        name:$("groupName").value,
+        year:$("groupYear").value,
+        est:$("estYear").value,
+        prevBalance:parseFloat($("prevBalance").value)||0,
+        moto:$("moto").value,
+        donor:$("donor").value
+      };
+      if(!data.group.name) return alert("मंडळाचे नाव भरा");
+
+      const gl=$("groupLogo").files[0];
+      if(gl){ const r=new FileReader(); r.onload=e=>{$("outGroupLogo").src=e.target.result;$("outGroupLogo").style.display='block';}; r.readAsDataURL(gl); }
+
+      const gp=$("ganpatiLogo").files[0];
+      if(gp){ const r=new FileReader(); r.onload=e=>{$("outGanpatiLogo").src=e.target.result;$("outGanpatiLogo").style.display='block';}; r.readAsDataURL(gp); }
+    }
+
+    function addMember(){
+      let n=$("memberName").value,a=parseFloat($("memberAmount").value)||0;
+      if(!n||a<=0) return;
+      data.members.push({name:n,amount:a});
+      $("memberName").value="";$("memberAmount").value="";
+      $("membersList").innerHTML=data.members.map(m=>`<div class="row-item">${m.name} - ₹${m.amount.toFixed(2)}</div>`).join("");
+    }
+
+    function addExpense(){
+      let n=$("expenseName").value,a1=parseFloat($("expenseAmt1").value)||0,a2=parseFloat($("expenseAmt2").value)||0;
+      if(!n||(a1+a2)<=0) return;
+      data.expenses.push({name:n,a1,a2,total:a1+a2});
+      $("expenseName").value="";$("expenseAmt1").value="";$("expenseAmt2").value="";
+      $("expensesList").innerHTML=data.expenses.map(e=>`<div class="row-item">${e.name} = ₹${e.total.toFixed(2)} (${e.a1}+${e.a2})</div>`).join("");
+    }
+
+    function addCommittee(){
+      let n=$("comName").value.trim(), r=$("comRole").value.trim();
+      if(!n||!r) return;
+      data.committee.push({name:n,role:r});
+      $("comName").value="";$("comRole").value="";
+      $("committeeList").innerHTML=data.committee.map((c,i)=>`
+        <div class="row-item">${c.name} (${c.role})
+          <button onclick="removeCommittee(${i})">❌</button>
+        </div>`).join("");
+    }
+    function removeCommittee(i){
+      data.committee.splice(i,1);
+      $("committeeList").innerHTML=data.committee.map((c,i)=>`
+        <div class="row-item">${c.name} (${c.role})
+          <button onclick="removeCommittee(${i})">❌</button>
+        </div>`).join("");
+    }
+
+    function addSignRole(){
+      let role=$("signRole").value.trim();
+      if(!role) return;
+      data.signRoles.push(role);
+      $("signRole").value="";
+      renderSignRoles();
+    }
+    function renderSignRoles(){
+      $("signRolesList").innerHTML=data.signRoles.map((r,i)=>`
+        <div class="row-item">${r} 
+          <button onclick="removeSignRole(${i})">❌</button>
+        </div>`).join("");
+    }
+    function removeSignRole(i){
+      data.signRoles.splice(i,1);
+      renderSignRoles();
+    }
+
+    function renderReport(){
+      $("reportTitle").textContent=data.group.name+" ("+(data.group.year||"")+")";
+      $("reportMeta").textContent="स्थापनेचा वर्ष: "+(data.group.est||"-");
+      $("reportMoto").textContent=data.group.moto?("घोषवाक्य: "+data.group.moto):"";
+      $("rDonor").textContent=data.group.donor||"-";
+
+      $("reportExpenses").querySelector("tbody").innerHTML=data.expenses.map(e=>`<tr><td>${e.name}</td><td>${e.a1.toFixed(2)}</td><td>${e.a2.toFixed(2)}</td><td>${e.total.toFixed(2)}</td></tr>`).join("");
+
+      $("reportCommittee").querySelector("tbody").innerHTML=data.committee.map(c=>`<tr><td>${c.name}</td><td>${c.role}</td></tr>`).join("");
+
+      let sumPrev=data.group.prevBalance||0;
+      let sumColl=data.members.reduce((s,m)=>s+m.amount,0);
+      let sumExp=data.expenses.reduce((s,e)=>s+e.total,0);
+      $("sumPrev").textContent="₹"+sumPrev.toFixed(2);
+      $("sumColl").textContent="₹"+sumColl.toFixed(2);
+      $("sumExp").textContent="₹"+sumExp.toFixed(2);
+      $("bal").textContent="₹"+(sumPrev+sumColl-sumExp).toFixed(2);
+
+      $("signSection").innerHTML=data.signRoles.map(r=>`
+        <div class="sign-box"><div class="sign-line"></div>${r}</div>
+      `).join("");
+    }
+  </script>
+</body>
+</html>
