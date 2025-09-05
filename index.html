@@ -1,277 +1,882 @@
 <!DOCTYPE html>
 <html lang="mr">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>गणपती मंडळ व्यवस्थापन प्रणाली</title>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>गणपती मंडळ व्यवस्थापन प्रणाली — Final</title>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+Bhai+2:wght@700&display=swap" rel="stylesheet">
   <style>
-    body{margin:0;font-family:"Noto Sans Devanagari",sans-serif;background:#fffaf3;color:#2f2f2f}
-    header{background:linear-gradient(90deg,#ff7043,#ff9800);color:white;padding:18px;text-align:center;font-weight:800;font-size:26px;box-shadow:0 4px 12px rgba(0,0,0,.2)}
-    @media print{header{display:none}}
-    .container{max-width:1100px;margin:0 auto;padding:18px}
-    .card{background:#fff;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,.1);padding:16px;margin-bottom:14px}
+    body{margin:0;font-family:"Noto Sans Devanagari",sans-serif;background:#fffaf3;color:#222}
+    header{background:linear-gradient(90deg,#ff7043,#ff9800);color:white;padding:12px 18px;font-weight:800;font-size:20px;display:flex;justify-content:space-between;align-items:center}
+    nav{background:#fff3e0;padding:8px;display:flex;gap:8px;border-bottom:1px solid #f0d7b5}
+    nav button{padding:6px 10px;border:none;border-radius:6px;cursor:pointer;background:transparent}
+    nav .active{background:#ff7043;color:white}
+    .container{max-width:1100px;margin:16px auto;padding:12px}
+    .card{background:#fff;border-radius:10px;box-shadow:0 4px 10px rgba(0,0,0,.06);padding:14px;margin-bottom:12px}
     .row{display:flex;gap:10px;flex-wrap:wrap}
-    .col{flex:1 1 200px;min-width:160px}
-    label{font-size:13px;color:#444}
-    input,select{width:100%;padding:8px;border:1px solid #ddd;border-radius:6px}
-    .btn{padding:8px 14px;border:none;border-radius:8px;font-weight:600;cursor:pointer;margin:4px}
+    .col{flex:1 1 220px;min-width:160px}
+    label{display:block;font-size:13px;color:#444;margin-bottom:6px}
+    input,select,textarea,button{font-size:14px}
+    input,select,textarea{width:100%;padding:8px;border:1px solid #ddd;border-radius:6px;box-sizing:border-box}
+    textarea{min-height:70px}
+    button{padding:8px 12px;border-radius:8px;border:none;cursor:pointer}
     .btn-primary{background:#169873;color:white}
     .btn-secondary{background:#999;color:white}
+    .small{padding:6px 8px;font-size:13px}
     .list{margin-top:10px}
-    .row-item{padding:8px;border:1px solid #eee;border-radius:6px;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center}
-    .summary{display:flex;gap:12px;flex-wrap:wrap;margin:12px 0}
-    .summary .box{flex:1 1 200px;background:#fffef8;border:1px solid #f1d9a6;border-radius:10px;padding:10px;text-align:center}
-    .summary .num{font-size:20px;font-weight:700}
+    .row-item{padding:8px;border:1px solid #eee;border-radius:6px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center}
     table{width:100%;border-collapse:collapse;margin-top:10px}
     th,td{border:1px solid #e8dcc0;padding:8px;text-align:left}
     th{background:#fff3d4}
-    .report-title{text-align:center;font-size:28px;font-weight:800;color:#b71c1c;margin:12px 0}
-    .report-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
-    .report-header img{max-height:80px}
-    .signatures{display:flex;justify-content:space-around;flex-wrap:wrap;margin-top:40px}
-    .sign-box{text-align:center;width:180px;margin:10px}
-    .sign-line{margin-top:60px;border-top:1px solid #333}
-    @media print{.no-print{display:none}}
+    .dashboard{display:flex;gap:12px;flex-wrap:wrap}
+    .dash-card{background:#fffef8;border:1px solid #f1d9a6;border-radius:8px;padding:10px;min-width:180px}
+    .muted{color:#666;font-size:13px}
+    .logo-row{display:flex;gap:12px;align-items:center}
+    .logo-preview{max-height:80px;border:1px solid #eee;padding:6px;background:white}
+    /* New style for report group name */
+    .report-group-name {
+      color: #ff7043; /* Orange color */
+      font-size: 28px; /* Bigger size */
+      font-family: 'Baloo Bhai 2', cursive; /* Stylish Marathi font */
+      font-weight: 700; /* Bold */
+    }
+    .report-meta-item {
+        display: block;
+        margin-top: 4px;
+    }
+    @media (max-width:720px){ .row{flex-direction:column} .logo-row{flex-direction:column;align-items:flex-start} }
   </style>
 </head>
 <body>
-  <header>गणपती मंडळ व्यवस्थापन प्रणाली</header>
+  <header>
+    <div>गणपती मंडळ व्यवस्थापन प्रणाली</div>
+    <div id="headerRight"></div>
+  </header>
+
+  <nav id="mainNav" style="display:none">
+    <button onclick="navOpen('dashboard')" id="navDashboard">Dashboard</button>
+    <button onclick="navOpen('info')" id="navInfo">Info</button>
+    <button onclick="navOpen('members')" id="navMembers">Members</button>
+    <button onclick="navOpen('committee')" id="navCommittee">Executive Committee</button>
+    <button onclick="navOpen('expenses')" id="navExpenses">Expenses</button>
+    <button onclick="navOpen('signatures')" id="navSign">Signatures</button>
+    <button onclick="navOpen('report')" id="navReport">Report</button>
+  </nav>
+
   <div class="container">
 
-    <!-- Info -->
-    <section id="info" class="card">
-      <h3>१) मंडळ माहिती</h3>
+    <section id="secRegister" class="card">
+      <h3>📝 नवीन Group Register करा</h3>
       <div class="row">
-        <div class="col"><label>मंडळाचे नाव</label><input id="groupName"></div>
-        <div class="col"><label>चालू वर्ष</label><input id="groupYear" type="number"></div>
-        <div class="col"><label>स्थापनेचा वर्ष</label><input id="estYear" type="number"></div>
-        <div class="col"><label>मागील वर्षाची शिल्लक</label><input id="prevBalance" type="number"></div>
+        <div class="col"><label>Group Name</label><input id="regGroup" placeholder="उदा. गणपती मंडळ"/></div>
+        <div class="col"><label>Login ID</label><input id="regId" placeholder="उदा. gangapti123"/></div>
+        <div class="col"><label>Password</label><input id="regPass" type="password"/></div>
       </div>
-      <div class="row">
-        <div class="col"><label>घोषवाक्य </label><input id="moto"></div>
-        <div class="col"><label>गणपती मूर्ती देनगिदार</label><input id="donor"></div>
+      <div style="margin-top:10px">
+        <button class="btn-primary" onclick="doRegister()">Register</button>
+        <button class="btn-secondary" onclick="showSection('secLogin')">Login</button>
       </div>
-      <div class="row">
-        <div class="col"><label>Group Logo</label><input id="groupLogo" type="file" accept="image/*"></div>
-        <div class="col"><label>Ganpati Photo</label><input id="ganpatiLogo" type="file" accept="image/*"></div>
-      </div>
-      <div class="no-print">
-        <button class="btn btn-primary" onclick="saveInfo();show('members')">पुढे</button>
-      </div>
+      <p id="regMsg" class="muted"></p>
     </section>
 
-    <!-- Members -->
-    <section id="members" class="card" style="display:none">
-      <h3>२) सदस्य</h3>
+    <section id="secLogin" class="card" style="display:none">
+      <h3>🔑 Login</h3>
       <div class="row">
-        <div class="col"><input id="memberName" placeholder="नाव"></div>
-        <div class="col"><input id="memberAmount" type="number" placeholder="वर्गणी ₹"></div>
-        <div class="col"><button class="btn btn-primary" onclick="addMember()">जोडा</button></div>
+        <div class="col"><label>Login ID</label><input id="loginId"/></div>
+        <div class="col"><label>Password</label><input id="loginPass" type="password"/></div>
       </div>
-      <div class="list" id="membersList"></div>
-      <div class="no-print">
-        <button class="btn btn-secondary" onclick="show('info')">मागे</button>
-        <button class="btn btn-primary" onclick="show('expenses')">पुढे</button>
+      <div style="margin-top:10px">
+        <button class="btn-primary" onclick="doLogin()">Login</button>
+        <button class="btn-secondary" onclick="showSection('secRegister')">Register</button>
       </div>
+      <p id="loginMsg" class="muted"></p>
     </section>
 
-    <!-- Expenses -->
-    <section id="expenses" class="card" style="display:none">
-      <h3>३) खर्च</h3>
-      <div class="row">
-        <div class="col"><input id="expenseName" placeholder="खर्चाचे नाव"></div>
-        <div class="col"><input id="expenseAmt1" type="number" placeholder="रक्कम १"></div>
-        <div class="col"><input id="expenseAmt2" type="number" placeholder="रक्कम २"></div>
-        <div class="col"><button class="btn btn-primary" onclick="addExpense()">जोडा</button></div>
-      </div>
-      <div class="list" id="expensesList"></div>
-      <div class="no-print">
-        <button class="btn btn-secondary" onclick="show('members')">मागे</button>
-        <button class="btn btn-primary" onclick="show('committee')">पुढे</button>
-      </div>
-    </section>
+    <section id="secApp" style="display:none">
 
-    <!-- Executive Committee -->
-    <section id="committee" class="card" style="display:none">
-      <h3>४) कार्यकारी समिती</h3>
-      <div class="row">
-        <div class="col"><input id="comName" placeholder="नाव"></div>
-        <div class="col">
-          <select id="comRole">
-            <option value="">पद निवडा</option>
-            <option>अध्यक्ष (President)</option>
-            <option>उपाध्यक्ष (Vice President)</option>
-            <option>खजिनदार (Treasurer)</option>
-            <option>सचिव (Secretary)</option>
-            <option>कार्याध्यक्ष (Executive President)</option>
-          </select>
+      <section id="page-dashboard" class="card">
+        <h3>📊 Dashboard — Year-wise Records</h3>
+        <div style="margin-bottom:10px">
+          <button class="btn-primary small" onclick="addYearPrompt()">➕ Add New Year</button>
+          <button class="btn-secondary small" onclick="exportAll()">Export All (JSON)</button>
+          <button class="btn-secondary small" onclick="importPrompt()">Import JSON</button>
         </div>
-        <div class="col"><button class="btn btn-primary" onclick="addCommittee()">जोडा</button></div>
-      </div>
-      <div class="list" id="committeeList"></div>
-      <div class="no-print">
-        <button class="btn btn-secondary" onclick="show('expenses')">मागे</button>
-        <button class="btn btn-primary" onclick="show('signatures')">पुढे</button>
-      </div>
-    </section>
+        <div id="yearsList" class="dashboard"></div>
+      </section>
 
-    <!-- Signatures -->
-    <section id="signatures" class="card" style="display:none">
-      <h3>५) स्वाक्षरी पदे</h3>
-      <div class="row">
-        <div class="col"><input id="signRole" placeholder="पद लिहा (उदा. अध्यक्ष)"></div>
-        <div class="col"><button class="btn btn-primary" onclick="addSignRole()">जोडा</button></div>
-      </div>
-      <div class="list" id="signRolesList"></div>
-      <div class="no-print">
-        <button class="btn btn-secondary" onclick="show('committee')">मागे</button>
-        <button class="btn btn-primary" onclick="renderReport();show('report')">अहवाल पहा</button>
-      </div>
-    </section>
-
-    <!-- Report -->
-    <section id="report" class="card" style="display:none">
-      <div class="report-header">
-        <img id="outGroupLogo" style="display:none">
-        <div>
-          <div class="report-title" id="reportTitle"></div>
-          <div id="reportMeta"></div>
-          <div id="reportMoto" style="font-style:italic;margin-top:4px;"></div>
+      <section id="page-info" class="card" style="display:none">
+        <h3>मंडळ माहिती (Group Info)</h3>
+        <div class="row">
+          <div class="col"><label>Group Name</label><input id="groupName"/></div>
+          <div class="col"><label>Moto / उद्देश (optional)</label><input id="groupMoto" placeholder="उदा. सेवा व संस्कृती"/></div>
         </div>
-        <img id="outGanpatiLogo" style="display:none">
-      </div>
 
-      <div class="summary">
-        <div class="box"><div>मागील वर्षाची शिल्लक</div><div class="num" id="sumPrev">₹0</div></div>
-        <div class="box"><div>एकूण संकलन</div><div class="num" id="sumColl">₹0</div></div>
-        <div class="box"><div>एकूण खर्च</div><div class="num" id="sumExp">₹0</div></div>
-        <div class="box"><div>निव्वळ शिल्लक</div><div class="num" id="bal">₹0</div></div>
-      </div>
+        <div class="row" style="margin-top:10px">
+          <div class="col">
+            <label>Group Logo (upload)</label>
+            <input id="groupLogoFile" type="file" accept="image/*"/>
+          </div>
+          <div class="col">
+            <label>Ganpati Logo (upload)</label>
+            <input id="ganpatiLogoFile" type="file" accept="image/*"/>
+          </div>
+          <div class="col">
+            <label>Year</label>
+            <select id="yearSelect"></select>
+          </div>
+        </div>
 
-      <h4>गणपती मूर्ती देनगिदार</h4>
-      <p id="rDonor"></p>
+        <div class="row" style="margin-top:10px">
+          <div class="col"><label>स्थापनेचा वर्ष</label><select id="estYear"></select></div>
+          <div class="col"><label>मागील वर्षाची शिल्लक (₹)</label><input id="prevBalance" type="number"/></div>
+          <div class="col"><label>गणपती मूर्ती दात्याचे नाव</label><input id="ganpatiDonorName" placeholder="उदा. श्री. पाटील"/></div>
+        </div>
 
-      <h4 style="margin-top:10px">खर्च यादी</h4>
-      <table id="reportExpenses"><thead><tr><th>खर्च</th><th>रक्कम</th></tr></thead><tbody></tbody></table>
+        <div class="row" style="margin-top:10px">
+          <div class="col" style="display:flex;align-items:flex-end;gap:8px">
+            <button class="btn-primary" onclick="saveInfo()">Save Info</button>
+            <button class="btn-secondary" onclick="navOpen('dashboard')">Back</button>
+          </div>
+        </div>
 
-      <!-- Executive Committee in report -->
-      <h4 style="margin-top:20px">कार्यकारी समिती</h4>
-      <table id="reportCommittee"><thead><tr><th>नाव</th><th>पद</th></tr></thead><tbody></tbody></table>
+        <div style="margin-top:12px" class="logo-row">
+          <div>
+            <div class="muted">Preview Group Logo</div>
+            <img id="previewGroupLogo" class="logo-preview" src="" alt="" />
+          </div>
+          <div>
+            <div class="muted">Preview Ganpati Logo</div>
+            <img id="previewGanpatiLogo" class="logo-preview" src="" alt="" />
+          </div>
+        </div>
+      </section>
 
-      <!-- Signature Section -->
-      <h4 style="margin-top:20px">स्वाक्षऱ्या</h4>
-      <div class="signatures" id="signSection"></div>
+      <section id="page-members" class="card" style="display:none">
+        <h3>सदस्य (Master list + Year-wise amounts)</h3>
+        <div class="row">
+          <div class="col"><label>Member Name</label><input id="newMemberName" placeholder="नाव"/></div>
+          <div class="col"><label>Default Amount (optional)</label><input id="newMemberAmount" type="number" placeholder="₹"/></div>
+          <div class="col" style="display:flex;align-items:flex-end"><button class="btn-primary" onclick="addMasterMember()">Add Member</button></div>
+        </div>
 
-      <div class="no-print" style="margin-top:10px">
-        <button class="btn btn-secondary" onclick="show('signatures')">मागे</button>
-        <button class="btn btn-primary" onclick="window.print()">Print / PDF</button>
-      </div>
+        <div style="margin-top:12px">
+          <h4>Master Members (for group)</h4>
+          <div id="masterMembersList" class="list"></div>
+        </div>
+
+        <div style="margin-top:12px">
+          <h4>This year's amounts — <span id="labelCurrentYear"></span></h4>
+          <div id="membersForYear" class="list"></div>
+          <div style="margin-top:10px">
+            <button class="btn-primary" onclick="saveMembersForYear()">Save This Year's Amounts</button>
+            <button class="btn-secondary" onclick="navOpen('dashboard')">Back</button>
+          </div>
+        </div>
+      </section>
+
+      <section id="page-committee" class="card" style="display:none">
+        <h3>कार्यकारी समिती (Executive Committee)</h3>
+        <div class="row">
+          <div class="col"><label>Member</label><select id="comMemberSelect"></select></div>
+          <div class="col"><label>Role</label><select id="comRoleSelect"><option>अध्यक्ष</option><option>उपाध्यक्ष</option><option>खजिनदार</option><option>सचिव</option><option>कार्याध्यक्ष</option></select></div>
+          <div class="col" style="display:flex;align-items:flex-end"><button class="btn-primary" onclick="addCommitteeMember()">Add to Committee</button></div>
+        </div>
+
+        <div style="margin-top:12px">
+          <h4>This year's committee</h4>
+          <div id="committeeList" class="list"></div>
+          <div style="margin-top:10px">
+            <button class="btn-primary" onclick="saveCommittee()">Save Committee</button>
+            <button class="btn-secondary" onclick="navOpen('dashboard')">Back</button>
+          </div>
+        </div>
+      </section>
+
+      <section id="page-expenses" class="card" style="display:none">
+        <h3>खर्च</h3>
+        <div class="row">
+          <div class="col"><label>Expense Name</label><input id="expenseName" placeholder="उदा. स्वागत खर्च"/></div>
+          <div class="col"><label>Amount 1</label><input id="expenseAmt1" type="number"/></div>
+          <div class="col"><label>Amount 2</label><input id="expenseAmt2" type="number"/></div>
+        </div>
+        <div style="margin-top:8px"><button class="btn-primary" onclick="addExpense()">Add Expense</button></div>
+
+        <div style="margin-top:12px">
+          <h4>This year's expenses</h4>
+          <div id="expensesList" class="list"></div>
+          <div style="margin-top:10px">
+            <button class="btn-primary" onclick="saveExpenses()">Save Expenses</button>
+            <button class="btn-secondary" onclick="navOpen('dashboard')">Back</button>
+          </div>
+        </div>
+      </section>
+
+      <section id="page-signatures" class="card" style="display:none">
+        <h3>स्वाक्षरी पदे</h3>
+        <div class="row">
+          <div class="col"><label>Role</label><input id="signRoleInput" placeholder="उदा. अध्यक्ष"/></div>
+          <div class="col" style="display:flex;align-items:flex-end"><button class="btn-primary" onclick="addSignRole()">Add</button></div>
+        </div>
+
+        <div style="margin-top:12px">
+          <h4>This year's sign roles</h4>
+          <div id="signRolesList" class="list"></div>
+          <div style="margin-top:10px"><button class="btn-secondary" onclick="navOpen('dashboard')">Back</button></div>
+        </div>
+      </section>
+
+      <section id="page-report" class="card" style="display:none">
+        <div class="row">
+          <div class="col">
+            <img id="reportGroupLogo" class="logo-preview" src="" alt="Group Logo" />
+          </div>
+          <div class="col">
+            <h2 id="reportTitle"></h2>
+            <div id="reportMoto" class="muted"></div>
+            <div id="reportMeta" class="muted"></div>
+          </div>
+          <div class="col">
+            <img id="reportGanpatiLogo" class="logo-preview" src="" alt="Ganpati Logo" />
+          </div>
+        </div>
+
+        <h4 style="margin-top:12px">कार्यकारी समिती</h4>
+        <table id="reportCommittee"><thead><tr><th>नाव</th><th>पद</th></tr></thead><tbody></tbody></table>
+
+        <h4 style="margin-top:12px">आर्थिक सारांश</h4>
+        <table id="reportMembersSummary"><thead><tr><th>वर्णन</th><th>रक्कम (₹)</th></tr></thead><tbody></tbody></table>
+
+        <h4 style="margin-top:12px">खर्च</h4>
+        <table id="reportExpenses"><thead><tr><th>खर्च</th><th>रक्कम (₹)</th></tr></thead><tbody></tbody></table>
+
+        <h4 style="margin-top:12px">स्वाक्षऱ्या</h4>
+        <div id="reportSignatures"></div>
+
+        <div style="margin-top:12px">
+          <button class="btn-primary" onclick="window.print()">Print / Save PDF</button>
+          <button class="btn-secondary" onclick="navOpen('dashboard')">Back</button>
+        </div>
+      </section>
+
     </section>
   </div>
 
-  <script>
-    let data={group:{},members:[],expenses:[],committee:[],signRoles:[]};
-    const $=id=>document.getElementById(id);
-
-    function show(step){
-      ["info","members","expenses","committee","signatures","report"].forEach(s=>{
-        $(s).style.display = (s===step)?'':'none';
-      });
+<script>
+/* Data model stored under localStorage.users keyed by loginId
+users = {
+  [id]: {
+    password: "...",
+    groupName: "...",
+    masterMembers: ["A","B",...],
+    records: {
+      "2025": {
+         group: { est, prevBalance, moto, groupLogo (base64), ganpatiLogo (base64), ganpatiDonorName }, // Added ganpatiDonorName
+         membersAmounts: { "A":100, "B":200, ... },
+         committee: [{name,role},...],
+         expenses: [{name,a1,a2,total},...],
+         signRoles: [...]
+      }, ...
     }
+  }
+}
+*/
 
-    function saveInfo(){
-      data.group={
-        name:$("groupName").value,
-        year:$("groupYear").value,
-        est:$("estYear").value,
-        prevBalance:parseFloat($("prevBalance").value)||0,
-        moto:$("moto").value,
-        donor:$("donor").value
-      };
-      if(!data.group.name) return alert("मंडळाचे नाव भरा");
+let users = JSON.parse(localStorage.getItem("users") || "{}");
+let currentUser = null;
+let currentYear = new Date().getFullYear().toString();
 
-      const gl=$("groupLogo").files[0];
-      if(gl){ const r=new FileReader(); r.onload=e=>{$("outGroupLogo").src=e.target.result;$("outGroupLogo").style.display='block';}; r.readAsDataURL(gl); }
+// helper
+const $ = id => document.getElementById(id);
 
-      const gp=$("ganpatiLogo").files[0];
-      if(gp){ const r=new FileReader(); r.onload=e=>{$("outGanpatiLogo").src=e.target.result;$("outGanpatiLogo").style.display='block';}; r.readAsDataURL(gp); }
+function showSection(sec){
+  // show top-level pages: register/login/app
+  // Ensure all are hidden first, then display the requested one.
+  ['secRegister','secLogin','secApp'].forEach(s=>{
+    $(s).style.display = 'none'; // Hide all
+  });
+  $(sec).style.display = 'block'; // Show the requested one
+}
+
+// navigation within app pages
+function navOpen(page){
+  // ensure app visible
+  $('secApp').style.display = 'block';
+  // hide all pages
+  ['page-dashboard','page-info','page-members','page-committee','page-expenses','page-signatures','page-report'].forEach(p=>$(p).style.display='none');
+  // show selected
+  $(`page-${page}`).style.display = 'block';
+  // highlight nav
+  document.querySelectorAll('#mainNav button').forEach(b=>b.classList.remove('active'));
+  document.querySelector(`#nav${capitalize(page)}`)?.classList.add('active');
+  // specific renders
+  if(page==='dashboard') renderYearsList();
+  if(page==='info') renderInfo();
+  if(page==='members') renderMasterAndYearMembers();
+  if(page==='committee') renderCommittee();
+  if(page==='expenses') renderExpensesList();
+  if(page==='signatures') renderSignRolesList();
+  if(page==='report') renderReport();
+}
+function capitalize(s){ return s.charAt(0).toUpperCase() + s.slice(1); }
+
+/* ========== Auth & initial UI ========== */
+function doRegister(){
+  const g = $('regGroup').value.trim();
+  const id = $('regId').value.trim();
+  const pass = $('regPass').value;
+  if(!g || !id || !pass){ $('regMsg').textContent = 'सर्व फील्ड भरा'; return; }
+  users = JSON.parse(localStorage.getItem('users')||'{}');
+  if(users[id]){ $('regMsg').textContent = 'हा ID आधीच आहे'; return; }
+  users[id] = { password: pass, groupName: g, masterMembers: [], records: {} };
+  localStorage.setItem('users', JSON.stringify(users));
+  $('regMsg').textContent = 'Registered. Now login.';
+  $('regGroup').value=''; $('regId').value=''; $('regPass').value='';
+  showSection('secLogin');
+}
+function doLogin(){
+  const id = $('loginId').value.trim();
+  const pass = $('loginPass').value;
+  users = JSON.parse(localStorage.getItem('users')||'{}');
+  if(users[id] && users[id].password === pass){
+    currentUser = id;
+    // show app nav
+    $('mainNav').style.display = 'flex';
+    $('headerRight').innerHTML = `<strong>${users[id].groupName || id}</strong> &nbsp; <button class="btn-secondary small" onclick="doLogout()">Logout</button>`;
+    // ensure yearSelect populated
+    populateYearSelect();
+    // set default currentYear if not existing
+    if(!users[currentUser].records) users[currentUser].records = {};
+    if(!users[currentUser].records[currentYear]) {
+      // create default record for currentYear ensuring master members blank keys
+      users[currentUser].records[currentYear] = { group:{}, membersAmounts:{}, committee:[], expenses:[], signRoles:[] };
+      localStorage.setItem('users', JSON.stringify(users));
     }
+    showSection('secApp');
+    navOpen('dashboard');
+    $('loginId').value=''; $('loginPass').value='';
+  } else {
+    $('loginMsg').textContent = 'Login failed — ID किंवा Password तपासा';
+  }
+}
+function doLogout(){
+  currentUser = null;
+  $('mainNav').style.display = 'none';
+  $('headerRight').innerHTML = '';
+  showSection('secLogin');
+}
 
-    function addMember(){
-      let n=$("memberName").value,a=parseFloat($("memberAmount").value)||0;
-      if(!n||a<=0) return;
-      data.members.push({name:n,amount:a});
-      $("memberName").value="";$("memberAmount").value="";
-      $("membersList").innerHTML=data.members.map(m=>`<div class="row-item">${m.name} - ₹${m.amount.toFixed(2)}</div>`).join("");
+/* ========== Year selection helpers ========== */
+function populateYearSelect(){
+  const sel = $('yearSelect');
+  sel.innerHTML = '';
+  const cur = new Date().getFullYear();
+  for(let y=1950;y<=2050;y++){
+    const opt = document.createElement('option'); opt.value = String(y); opt.textContent = String(y);
+    if(String(y)===currentYear) opt.selected = true;
+    sel.appendChild(opt);
+  }
+  // estYear
+  const ey = $('estYear'); ey.innerHTML = '';
+  for(let y=1950;y<=2050;y++){ const o=document.createElement('option');o.value=String(y);o.textContent=String(y); ey.appendChild(o); }
+  sel.onchange = function(){ currentYear = sel.value; // on change load/create record
+    if(currentUser) loadYear(currentYear);
+    renderMasterAndYearMembers();
+  }
+}
+
+/* ========== Year records management ========= */
+function addYearPrompt(){
+  if(!currentUser) return alert('कृपया login करा');
+  let y = prompt('नवीन वर्ष टाका (उदा. 2025)');
+  if(!y) return;
+  y = String(y);
+  users = JSON.parse(localStorage.getItem('users')||'{}');
+  if(!users[currentUser]) return alert('user missing');
+  if(users[currentUser].records && users[currentUser].records[y]) return alert('ही वर्ष आधीच आहे');
+  // create new year record; ensure master members keys exist (copy empty or previous)
+  users[currentUser].records = users[currentUser].records || {};
+  // try to copy previous year's member list amounts if present, else blank
+  const prevYear = Object.keys(users[currentUser].records).sort().reverse()[0]; // latest existing
+  const newRec = { group: {}, membersAmounts: {}, committee: [], expenses: [], signRoles: [] };
+  // ensure masterMembers exist
+  users[currentUser].masterMembers = users[currentUser].masterMembers || [];
+  users[currentUser].masterMembers.forEach(m=>{
+    if(prevYear && users[currentUser].records[prevYear] && users[currentUser].records[prevYear].membersAmounts && (m in users[currentUser].records[prevYear].membersAmounts)){
+      // do not carry amount automatically — keep empty string so user fills new amount
+      newRec.membersAmounts[m] = "";
+    } else {
+      newRec.membersAmounts[m] = "";
     }
+  });
+  users[currentUser].records[y] = newRec;
+  localStorage.setItem('users', JSON.stringify(users));
+  loadYear(y);
+  renderYearsList();
+  navOpen('members');
+}
 
-    function addExpense(){
-      let n=$("expenseName").value,a1=parseFloat($("expenseAmt1").value)||0,a2=parseFloat($("expenseAmt2").value)||0;
-      if(!n||(a1+a2)<=0) return;
-      data.expenses.push({name:n,a1,a2,total:a1+a2});
-      $("expenseName").value="";$("expenseAmt1").value="";$("expenseAmt2").value="";
-      $("expensesList").innerHTML=data.expenses.map(e=>`<div class="row-item">${e.name} = ₹${e.total.toFixed(2)}</div>`).join("");
+function loadYear(y){
+  if(!currentUser) return;
+  users = JSON.parse(localStorage.getItem('users')||'{}');
+  currentYear = String(y);
+  // ensure record exists
+  if(!users[currentUser].records) users[currentUser].records = {};
+  if(!users[currentUser].records[currentYear]) {
+    users[currentUser].records[currentYear] = { group:{}, membersAmounts:{}, committee:[], expenses:[], signRoles:[] };
+  }
+  // ensure keys for master members exist
+  users[currentUser].masterMembers = users[currentUser].masterMembers || [];
+  users[currentUser].masterMembers.forEach(m => {
+    if(!(m in users[currentUser].records[currentYear].membersAmounts)) users[currentUser].records[currentYear].membersAmounts[m] = "";
+  });
+  localStorage.setItem('users', JSON.stringify(users));
+  // update UI selects and fields
+  populateYearSelect();
+  $('yearSelect').value = currentYear;
+  renderMasterAndYearMembers();
+  renderCommittee();
+  renderExpensesList();
+  renderSignRolesList();
+  renderInfo();
+  renderYearsList();
+}
+
+/* ========== Info save (logos, moto) ========== */
+function renderInfo(){
+  if(!currentUser) return;
+  users = JSON.parse(localStorage.getItem('users')||'{}');
+  const u = users[currentUser];
+  $('groupName').value = u.groupName || '';
+  const rec = u.records && u.records[currentYear] ? u.records[currentYear] : null;
+  if(rec && rec.group){
+    $('groupMoto').value = rec.group.moto || '';
+    $('estYear').value = rec.group.est || '';
+    $('prevBalance').value = rec.group.prevBalance || '';
+    $('ganpatiDonorName').value = rec.group.ganpatiDonorName || ''; // Load donor name
+    if(rec.group.groupLogo) $('previewGroupLogo').src = rec.group.groupLogo;
+    else $('previewGroupLogo').src = '';
+    if(rec.group.ganpatiLogo) $('previewGanpatiLogo').src = rec.group.ganpatiLogo;
+    else $('previewGanpatiLogo').src = '';
+  } else {
+    $('groupMoto').value=''; $('estYear').value=''; $('prevBalance').value=''; $('ganpatiDonorName').value=''; // Clear donor name
+    $('previewGroupLogo').src=''; $('previewGanpatiLogo').src='';
+  }
+  $('labelCurrentYear').textContent = currentYear;
+}
+
+function fileToBase64(file, cb){
+  if(!file){ cb(null); return; }
+  const reader = new FileReader();
+  reader.onload = ()=>cb(reader.result);
+  reader.readAsDataURL(file);
+}
+
+function saveInfo(){
+  if(!currentUser) return alert('Please login');
+  users = JSON.parse(localStorage.getItem('users')||'{}');
+  const u = users[currentUser];
+  u.groupName = $('groupName').value || u.groupName;
+  u.records = u.records || {};
+  u.records[currentYear] = u.records[currentYear] || { group:{}, membersAmounts:{}, committee:[], expenses:[], signRoles:[] };
+  const rec = u.records[currentYear];
+  rec.group = rec.group || {};
+  rec.group.est = $('estYear').value || rec.group.est || '';
+  rec.group.prevBalance = parseFloat($('prevBalance').value) || 0;
+  rec.group.moto = $('groupMoto').value || rec.group.moto || '';
+  rec.group.ganpatiDonorName = $('ganpatiDonorName').value.trim() || ''; // Save donor name
+
+  // process logo files asynchronously then save
+  const gfile = $('groupLogoFile').files[0];
+  const pfile = $('ganpatiLogoFile').files[0];
+
+  let groupLogoProcessed = false;
+  let ganpatiLogoProcessed = false;
+
+  const checkAndSave = () => {
+    if ( (gfile && !groupLogoProcessed) || (pfile && !ganpatiLogoProcessed) ) {
+      return; // Still waiting for a logo to process
     }
+    users[currentUser] = u;
+    localStorage.setItem('users', JSON.stringify(users));
+    alert('Info saved for '+currentYear);
+    renderInfo();
+    // also update header group name
+    $('headerRight').innerHTML = `<strong>${u.groupName}</strong> &nbsp; <button class="btn-secondary small" onclick="doLogout()">Logout</button>`;
+    renderYearsList();
+  };
 
-    function addCommittee(){
-      let n=$("comName").value.trim(), r=$("comRole").value.trim();
-      if(!n||!r) return;
-      data.committee.push({name:n,role:r});
-      $("comName").value="";$("comRole").value="";
-      $("committeeList").innerHTML=data.committee.map((c,i)=>`
-        <div class="row-item">${c.name} (${c.role})
-          <button onclick="removeCommittee(${i})">❌</button>
-        </div>`).join("");
+  if(gfile){
+    fileToBase64(gfile, (b64)=>{
+      if(b64) rec.group.groupLogo = b64;
+      groupLogoProcessed = true;
+      checkAndSave();
+    });
+  } else {
+    groupLogoProcessed = true; // No file to process
+  }
+
+  if(pfile){
+    fileToBase64(pfile, (b64p)=>{
+      if(b64p) rec.group.ganpatiLogo = b64p;
+      ganpatiLogoProcessed = true;
+      checkAndSave();
+    });
+  } else {
+    ganpatiLogoProcessed = true; // No file to process
+  }
+
+  // If no files were selected, trigger save immediately
+  if (!gfile && !pfile) {
+    checkAndSave();
+  }
+}
+
+/* ========== Master Members and Year amounts ========= */
+function addMasterMember(){
+  if(!currentUser) return alert('Please login');
+  const name = $('newMemberName').value.trim();
+  const defaultAmt = $('newMemberAmount').value;
+  if(!name) return alert('नाव भरा');
+  users = JSON.parse(localStorage.getItem('users')||'{}');
+  const u = users[currentUser];
+  u.masterMembers = u.masterMembers || [];
+  // prevent duplicates
+  if(u.masterMembers.some(m=>m.toLowerCase()===name.toLowerCase())) {
+    alert('Member already exists');
+  } else {
+    u.masterMembers.push(name);
+    // add key in all existing records with empty value
+    Object.keys(u.records || {}).forEach(y=>{
+      u.records[y].membersAmounts = u.records[y].membersAmounts || {};
+      u.records[y].membersAmounts[name] = defaultAmt==="" ? "" : parseFloat(defaultAmt)||0;
+    });
+    users[currentUser] = u;
+    localStorage.setItem('users', JSON.stringify(users));
+    $('newMemberName').value=''; $('newMemberAmount').value='';
+    renderMasterAndYearMembers();
+    renderCommittee();
+    renderYearsList();
+  }
+}
+
+function renderMasterAndYearMembers(){
+  if(!currentUser) return;
+  users = JSON.parse(localStorage.getItem('users')||'{}');
+  const u = users[currentUser];
+  u.masterMembers = u.masterMembers || [];
+  // master list UI
+  const masterDiv = $('masterMembersList'); masterDiv.innerHTML = '';
+  if(u.masterMembers.length===0) masterDiv.innerHTML = '<div class="muted">अद्याप सदस्य नाहीत</div>';
+  else u.masterMembers.forEach((m,idx)=>{
+    const d = document.createElement('div'); d.className='row-item';
+    d.innerHTML = `<div>${m}</div><div><button class="small" onclick="removeMasterMember(${idx})">Delete</button></div>`;
+    masterDiv.appendChild(d);
+  });
+
+  // year amounts
+  const yearDiv = $('membersForYear'); yearDiv.innerHTML = '';
+  u.records = u.records || {};
+  u.records[currentYear] = u.records[currentYear] || { group:{}, membersAmounts:{}, committee:[], expenses:[], signRoles:[] };
+  const rec = u.records[currentYear];
+  $('labelCurrentYear').textContent = currentYear;
+  u.masterMembers.forEach((m,i)=>{
+    // ensure key exists
+    if(!(m in rec.membersAmounts)) rec.membersAmounts[m] = "";
+    const val = rec.membersAmounts[m];
+    const row = document.createElement('div'); row.className='row-item';
+    row.innerHTML = `<div style="flex:1">${m}</div>
+      <div style="width:160px;display:flex;gap:8px;align-items:center">
+        <input type="number" id="amt_${i}" value="${val===null? '': val}" style="padding:6px;border:1px solid #ddd;border-radius:6px;width:100px"/>
+        <button class="small" onclick="saveMemberAmount(${i})">Save</button>
+      </div>`;
+    yearDiv.appendChild(row);
+  });
+  // persist any new keys
+  users[currentUser] = u; localStorage.setItem('users', JSON.stringify(users));
+}
+
+function saveMemberAmount(idx){
+  if(!currentUser) return;
+  users = JSON.parse(localStorage.getItem('users')||'{}');
+  const u = users[currentUser];
+  const name = u.masterMembers[idx];
+  const val = $(`amt_${idx}`).value;
+  u.records = u.records || {};
+  u.records[currentYear] = u.records[currentYear] || { group:{}, membersAmounts:{}, committee:[], expenses:[], signRoles:[] };
+  u.records[currentYear].membersAmounts[name] = val==="" ? "" : parseFloat(val)||0;
+  users[currentUser] = u; localStorage.setItem('users', JSON.stringify(users));
+  alert(name + " ची रक्कम सेव्ह झाली");
+}
+
+function saveMembersForYear(){
+  if(!currentUser) return;
+  users = JSON.parse(localStorage.getItem('users')||'{}');
+  const u = users[currentUser];
+  u.records = u.records || {};
+  u.records[currentYear] = u.records[currentYear] || { group:{}, membersAmounts:{}, committee:[], expenses:[], signRoles:[] };
+  u.masterMembers.forEach((m,i)=>{
+    const el = $(`amt_${i}`);
+    if(el) u.records[currentYear].membersAmounts[m] = el.value==="" ? "" : parseFloat(el.value)||0;
+  });
+  users[currentUser] = u; localStorage.setItem('users', JSON.stringify(users));
+  alert('या वर्षाचे सदस्यरक्कम सेव्ह झाले');
+  renderYearsList();
+}
+
+/* remove master member */
+function removeMasterMember(idx){
+  if(!confirm('हा सदस्य हटवायचा आहे का?')) return;
+  users = JSON.parse(localStorage.getItem('users')||'{}');
+  const u = users[currentUser];
+  const name = u.masterMembers.splice(idx,1)[0];
+  // remove from all records
+  Object.keys(u.records||{}).forEach(y=>{
+    if(u.records[y].membersAmounts && (name in u.records[y].membersAmounts)) delete u.records[y].membersAmounts[name];
+  });
+  users[currentUser] = u; localStorage.setItem('users', JSON.stringify(users));
+  renderMasterAndYearMembers(); renderCommittee(); renderYearsList();
+}
+
+/* ========== Committee ========== */
+function addCommitteeMember(){
+  if(!currentUser) return;
+  const member = $('comMemberSelect').value;
+  const role = $('comRoleSelect').value;
+  if(!member) return alert('Member निवडा');
+  users = JSON.parse(localStorage.getItem('users')||'{}');
+  const u = users[currentUser];
+  u.records = u.records || {};
+  u.records[currentYear] = u.records[currentYear] || { group:{}, membersAmounts:{}, committee:[], expenses:[], signRoles:[] };
+  u.records[currentYear].committee.push({ name: member, role });
+  users[currentUser] = u; localStorage.setItem('users', JSON.stringify(users));
+  renderCommittee();
+}
+
+function renderCommittee(){
+  if(!currentUser) return;
+  users = JSON.parse(localStorage.getItem('users')||'{}');
+  const u = users[currentUser];
+  u.masterMembers = u.masterMembers || [];
+  // fill member select
+  $('comMemberSelect').innerHTML = u.masterMembers.map(m=>`<option value="${escapeHtml(m)}">${escapeHtml(m)}</option>`).join('') || '<option value="">(no members)</option>';
+  // show current year's committee
+  const rec = (u.records && u.records[currentYear]) ? u.records[currentYear] : { committee:[] };
+  $('committeeList').innerHTML = (rec.committee||[]).map(c=>`<div class="row-item">${c.name} — ${c.role} <button class="small" onclick="removeCommittee(${rec.committee.indexOf(c)})">Delete</button></div>`).join('') || '<div class="muted">Committee माहित नाही</div>';
+}
+
+function removeCommittee(index){
+  if(!currentUser) return;
+  users = JSON.parse(localStorage.getItem('users')||'{}');
+  const rec = users[currentUser].records[currentYear];
+  if(rec && rec.committee && rec.committee[index]) rec.committee.splice(index,1);
+  users[currentUser] = users[currentUser];
+  localStorage.setItem('users', JSON.stringify(users));
+  renderCommittee();
+}
+
+function saveCommittee(){ alert('Committee saved'); }
+
+/* ========== Expenses ========== */
+function addExpense(){
+  if(!currentUser) return;
+  const name = $('expenseName').value.trim();
+  const a1 = parseFloat($('expenseAmt1').value) || 0;
+  const a2 = parseFloat($('expenseAmt2').value) || 0;
+  if(!name) return alert('खर्चाचे नाव भरा');
+  users = JSON.parse(localStorage.getItem('users')||'{}');
+  const u = users[currentUser];
+  u.records = u.records || {};
+  u.records[currentYear] = u.records[currentYear] || { group:{}, membersAmounts:{}, committee:[], expenses:[], signRoles:[] };
+  u.records[currentYear].expenses.push({ name, a1, a2, total: a1+a2 });
+  users[currentUser] = u; localStorage.setItem('users', JSON.stringify(users));
+  $('expenseName').value=''; $('expenseAmt1').value=''; $('expenseAmt2').value='';
+  renderExpensesList();
+}
+
+function renderExpensesList(){
+  if(!currentUser) return;
+  users = JSON.parse(localStorage.getItem('users')||'{}');
+  const rec = users[currentUser].records && users[currentUser].records[currentYear] ? users[currentUser].records[currentYear] : { expenses:[] };
+  $('expensesList').innerHTML = (rec.expenses||[]).map((e,i)=>`<div class="row-item">${e.name} — ₹${(e.total||0).toFixed(2)} <button class="small" onclick="removeExpense(${i})">Delete</button></div>`).join('') || '<div class="muted">Expenses none</div>';
+}
+
+function removeExpense(i){
+  if(!currentUser) return;
+  users = JSON.parse(localStorage.getItem('users')||'{}');
+  const rec = users[currentUser].records[currentYear];
+  if(rec && rec.expenses && rec.expenses[i]) rec.expenses.splice(i,1);
+  users[currentUser] = users[currentUser];
+  localStorage.setItem('users', JSON.stringify(users));
+  renderExpensesList();
+}
+
+function saveExpenses(){ alert('Expenses saved'); }
+
+/* ========== Sign roles ========== */
+function addSignRole(){
+  if(!currentUser) return;
+  const r = $('signRoleInput').value.trim();
+  if(!r) return alert('पद भरा');
+  users = JSON.parse(localStorage.getItem('users')||'{}');
+  users[currentUser].records = users[currentUser].records || {};
+  users[currentUser].records[currentYear] = users[currentUser].records[currentYear] || { group:{}, membersAmounts:{}, committee:[], expenses:[], signRoles:[] };
+  users[currentUser].records[currentYear].signRoles.push(r);
+  localStorage.setItem('users', JSON.stringify(users));
+  $('signRoleInput').value='';
+  renderSignRolesList();
+}
+
+function renderSignRolesList(){
+  if(!currentUser) return;
+  users = JSON.parse(localStorage.getItem('users')||'{}');
+  const rec = users[currentUser].records && users[currentUser].records[currentYear] ? users[currentUser].records[currentYear] : { signRoles:[] };
+  $('signRolesList').innerHTML = (rec.signRoles||[]).map(s=>`<div class="row-item">${s} <button class="small" onclick="removeSignRole(${i})">Delete</button></div>`).join('') || '<div class="muted">No sign roles</div>';
+}
+
+function removeSignRole(i){
+  if(!currentUser) return;
+  users = JSON.parse(localStorage.getItem('users')||'{}');
+  const rec = users[currentUser].records[currentYear];
+  if(rec && rec.signRoles && rec.signRoles[i]) rec.signRoles.splice(i,1);
+  localStorage.setItem('users', JSON.stringify(users));
+  renderSignRolesList();
+}
+
+/* ========== Report rendering ========== */
+function renderReport(){
+  if(!currentUser) return;
+  users = JSON.parse(localStorage.getItem('users')||'{}');
+  const u = users[currentUser];
+  const rec = u.records && u.records[currentYear] ? u.records[currentYear] : { group:{}, membersAmounts:{}, committee:[], expenses:[], signRoles:[] };
+  // logos and meta
+  $('reportTitle').innerHTML = `<span class="report-group-name">${escapeHtml(u.groupName || '')}</span> — ${currentYear}`;
+  $('reportMoto').textContent = rec.group && rec.group.moto ? rec.group.moto : '';
+
+  let metaHtml = '';
+  if (rec.group && rec.group.est) {
+    metaHtml += `<span class="report-meta-item">स्थापना: ${rec.group.est}</span>`;
+  }
+  if (rec.group && rec.group.prevBalance) {
+    metaHtml += `<span class="report-meta-item">मागील वर्षाची शिल्लक: ₹${rec.group.prevBalance}</span>`;
+  }
+  if (rec.group && rec.group.ganpatiDonorName) {
+    metaHtml += `<span class="report-meta-item">गणपती मूर्ती दाते: ${rec.group.ganpatiDonorName}</span>`;
+  }
+  $('reportMeta').innerHTML = metaHtml;
+  
+  $('reportGroupLogo').src = (rec.group && rec.group.groupLogo) ? rec.group.groupLogo : '';
+  $('reportGanpatiLogo').src = (rec.group && rec.group.ganpatiLogo) ? rec.group.ganpatiLogo : '';
+
+  // committee
+  const tbodyC = $('reportCommittee').querySelector('tbody'); tbodyC.innerHTML = '';
+  (rec.committee || []).forEach(c => { tbodyC.innerHTML += `<tr><td>${escapeHtml(c.name)}</td><td>${escapeHtml(c.role)}</td></tr>`; });
+
+  // financial summary
+  const tbodyMS = $('reportMembersSummary').querySelector('tbody'); tbodyMS.innerHTML = '';
+  let totalMemberAmount = 0;
+  if (rec.membersAmounts) {
+    for (const memberName in rec.membersAmounts) {
+      const amount = parseFloat(rec.membersAmounts[memberName]);
+      if (!isNaN(amount) && amount !== "") {
+        totalMemberAmount += amount;
+      }
     }
-    function removeCommittee(i){
-      data.committee.splice(i,1);
-      $("committeeList").innerHTML=data.committee.map((c,i)=>`
-        <div class="row-item">${c.name} (${c.role})
-          <button onclick="removeCommittee(${i})">❌</button>
-        </div>`).join("");
-    }
+  }
+  
+  let totalExpenseAmount = 0;
+  (rec.expenses || []).forEach(e => {
+    totalExpenseAmount += (e.total || 0);
+  });
+  
+  const prevBalance = (rec.group && rec.group.prevBalance) ? parseFloat(rec.group.prevBalance) : 0;
+  const finalBalance = prevBalance + totalMemberAmount - totalExpenseAmount;
+  
+  tbodyMS.innerHTML += `<tr><td>मागील वर्षाची शिल्लक</td><td>₹${prevBalance.toFixed(2)}</td></tr>`;
+  tbodyMS.innerHTML += `<tr><td>एकूण वर्गणी जमा</td><td>₹${totalMemberAmount.toFixed(2)}</td></tr>`;
+  tbodyMS.innerHTML += `<tr><td>एकूण खर्च</td><td>₹${totalExpenseAmount.toFixed(2)}</td></tr>`;
+  tbodyMS.innerHTML += `<tr><td><strong>अंतिम शिल्लक</strong></td><td><strong>₹${finalBalance.toFixed(2)}</strong></td></tr>`;
 
-    function addSignRole(){
-      let role=$("signRole").value.trim();
-      if(!role) return;
-      data.signRoles.push(role);
-      $("signRole").value="";
-      renderSignRoles();
-    }
-    function renderSignRoles(){
-      $("signRolesList").innerHTML=data.signRoles.map((r,i)=>`
-        <div class="row-item">${r} 
-          <button onclick="removeSignRole(${i})">❌</button>
-        </div>`).join("");
-    }
-    function removeSignRole(i){
-      data.signRoles.splice(i,1);
-      renderSignRoles();
-    }
 
-    function renderReport(){
-      $("reportTitle").textContent=data.group.name+" ("+(data.group.year||"")+")";
-      $("reportMeta").textContent="स्थापनेचा वर्ष: "+(data.group.est||"-");
-      $("reportMoto").textContent=data.group.moto?("घोषवाक्य: "+data.group.moto):"";
-      $("rDonor").textContent=data.group.donor||"-";
+  // expenses
+  const tbodyE = $('reportExpenses').querySelector('tbody'); tbodyE.innerHTML = '';
+  (rec.expenses || []).forEach(e=> tbodyE.innerHTML += `<tr><td>${escapeHtml(e.name)}</td><td>₹${(e.total||0).toFixed(2)}</td></tr>`);
 
-      $("reportExpenses").querySelector("tbody").innerHTML=data.expenses.map(e=>`<tr><td>${e.name}</td><td>${e.total.toFixed(2)}</td></tr>`).join("");
+  // signatures
+  $('reportSignatures').innerHTML = (rec.signRoles||[]).map(s=>`<div>${escapeHtml(s)} ____________________</div>`).join('');
+}
 
-      $("reportCommittee").querySelector("tbody").innerHTML=data.committee.map(c=>`<tr><td>${c.name}</td><td>${c.role}</td></tr>`).join("");
+function escapeHtml(s){ if(!s) return ''; return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
-      let sumPrev=data.group.prevBalance||0;
-      let sumColl=data.members.reduce((s,m)=>s+m.amount,0);
-      let sumExp=data.expenses.reduce((s,e)=>s+e.total,0);
-      $("sumPrev").textContent="₹"+sumPrev.toFixed(2);
-      $("sumColl").textContent="₹"+sumColl.toFixed(2);
-      $("sumExp").textContent="₹"+sumExp.toFixed(2);
-      $("bal").textContent="₹"+(sumPrev+sumColl-sumExp).toFixed(2);
+/* ========== Dashboard list, load, delete, export/import ========== */
+function renderYearsList(){
+  if(!currentUser) return;
+  users = JSON.parse(localStorage.getItem('users')||'{}');
+  const recs = users[currentUser].records || {};
+  const el = $('yearsList'); el.innerHTML = '';
+  const years = Object.keys(recs).sort((a,b)=>b-a);
+  if(years.length===0){ el.innerHTML = '<div class="muted">कोणीही वर्षाचे रेकॉर्ड्स नाहीत. ➕ Add New Year क्लिक करा.</div>'; return; }
+  years.forEach(y=>{
+    const r = recs[y];
+    const memCount = Object.keys(r.membersAmounts||{}).length;
+    const expTotal = (r.expenses||[]).reduce((s,e)=>s+(e.total||0),0);
+    const card = document.createElement('div'); card.className='dash-card';
+    card.innerHTML = `<div><strong>${y}</strong></div><div class="muted">Members: ${memCount}</div><div class="muted">Expenses: ₹${expTotal.toFixed(2)}</div>
+      <div style="margin-top:8px">
+        <button class="small" onclick="loadYear('${y}'); navOpen('info');">Load</button> <button class="small" onclick="loadYearAndShow('${y}')">View Report</button>
+        <button class="small" onclick="deleteYear('${y}')">Delete</button>
+      </div>`;
+    el.appendChild(card);
+  });
+}
 
-      $("signSection").innerHTML=data.signRoles.map(r=>`
-        <div class="sign-box"><div class="sign-line"></div>${r}</div>
-      `).join("");
-    }
-  </script>
+function loadYearAndShow(y){ loadYear(y); navOpen('report'); }
+function deleteYear(y){
+  if(!confirm('वर्ष '+y+' delete करायचे?')) return;
+  users = JSON.parse(localStorage.getItem('users')||'{}');
+  if(users[currentUser] && users[currentUser].records) delete users[currentUser].records[y];
+  localStorage.setItem('users', JSON.stringify(users));
+  renderYearsList();
+}
+
+/* ========== Utilities: Export/Import ========= */
+function exportAll(){
+  if(!currentUser) return alert('Login first');
+  users = JSON.parse(localStorage.getItem('users')||'{}');
+  const dataStr = JSON.stringify(users[currentUser], null, 2);
+  const blob = new Blob([dataStr], {type: 'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = url; a.download = `${currentUser}_data.json`; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+}
+function importPrompt(){
+  const inp = document.createElement('input'); inp.type='file'; inp.accept='application/json';
+  inp.onchange = (e)=> {
+    const f = e.target.files[0];
+    if(!f) return;
+    const r = new FileReader();
+    r.onload = ()=> {
+      try{
+        const obj = JSON.parse(r.result);
+        // merge into current user's records
+        users = JSON.parse(localStorage.getItem('users')||'{}');
+        if(!currentUser) { alert('Please login first to import into your group'); return; }
+        users[currentUser] = obj;
+        localStorage.setItem('users', JSON.stringify(users));
+        alert('Import successful');
+        renderYearsList();
+      } catch(err){ alert('Invalid JSON'); }
+    };
+    r.readAsText(f);
+  };
+  inp.click();
+}
+
+/* ========== Initialization: start on register view ========== */
+(function init(){
+  users = JSON.parse(localStorage.getItem('users')||'{}');
+  showSection('secRegister'); // Start on the register section
+  // populate yearSelect
+  populateYearSelect();
+})();
+</script>
 </body>
 </html>
-
