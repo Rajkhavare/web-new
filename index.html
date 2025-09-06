@@ -5,11 +5,12 @@
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
   <title>गणपती मंडळ व्यवस्थापन प्रणाली — Final</title>
   <link href="https://fonts.googleapis.com/css2?family=Baloo+Bhai+2:wght@700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;700&display=swap" rel="stylesheet">
   <style>
     body{margin:0;font-family:"Noto Sans Devanagari",sans-serif;background:#fffaf3;color:#222}
     header{background:linear-gradient(90deg,#ff7043,#ff9800);color:white;padding:12px 18px;font-weight:800;font-size:20px;display:flex;justify-content:space-between;align-items:center}
-    nav{background:#fff3e0;padding:8px;display:flex;gap:8px;border-bottom:1px solid #f0d7b5}
-    nav button{padding:6px 10px;border:none;border-radius:6px;cursor:pointer;background:transparent}
+    nav{background:#fff3e0;padding:8px;display:flex;gap:8px;border-bottom:1px solid #f0d7b5;flex-wrap:wrap;}
+    nav button{padding:6px 10px;border:none;border-radius:6px;cursor:pointer;background:transparent;font-family: inherit;}
     nav .active{background:#ff7043;color:white}
     .container{max-width:1100px;margin:16px auto;padding:12px}
     .card{background:#fff;border-radius:10px;box-shadow:0 4px 10px rgba(0,0,0,.06);padding:14px;margin-bottom:12px}
@@ -35,10 +36,11 @@
     .logo-preview{max-height:80px;border:1px solid #eee;padding:6px;background:white}
     /* New style for report group name */
     .report-group-name {
-      color: #ff7043; /* Orange color */
-      font-size: 28px; /* Bigger size */
-      font-family: 'Baloo Bhai 2', cursive; /* Stylish Marathi font */
-      font-weight: 700; /* Bold */
+      /* These will be overridden by inline styles from user input */
+      color: #ff7043; 
+      font-size: 28px; 
+      font-family: 'Baloo Bhai 2', cursive; 
+      font-weight: 700; 
     }
     .report-meta-item {
         display: block;
@@ -55,12 +57,13 @@
 
   <nav id="mainNav" style="display:none">
     <button onclick="navOpen('dashboard')" id="navDashboard">Dashboard</button>
-    <button onclick="navOpen('info')" id="navInfo">Info</button>
-    <button onclick="navOpen('members')" id="navMembers">Members</button>
-    <button onclick="navOpen('committee')" id="navCommittee">Executive Committee</button>
-    <button onclick="navOpen('expenses')" id="navExpenses">Expenses</button>
-    <button onclick="navOpen('signatures')" id="navSign">Signatures</button>
-    <button onclick="navOpen('report')" id="navReport">Report</button>
+    <button onclick="navOpen('groupInfo')" id="navGroupInfo">मंडळ माहिती</button>
+    <button onclick="navOpen('aboutUs')" id="navAboutUs">आमच्याबद्दल</button>
+    <button onclick="navOpen('members')" id="navMembers">सदस्य/वर्गणी</button>
+    <button onclick="navOpen('committee')" id="navCommittee">कार्यकारी समिती</button>
+    <button onclick="navOpen('expenses')" id="navExpenses">खर्च</button>
+    <button onclick="navOpen('signatures')" id="navSignatures">स्वाक्षरी</button>
+    <button onclick="navOpen('report')" id="navReport">अहवाल</button>
   </nav>
 
   <div class="container">
@@ -104,7 +107,7 @@
         <div id="yearsList" class="dashboard"></div>
       </section>
 
-      <section id="page-info" class="card" style="display:none">
+      <section id="page-groupInfo" class="card" style="display:none">
         <h3>मंडळ माहिती (Group Info)</h3>
         <div class="row">
           <div class="col"><label>Group Name</label><input id="groupName"/></div>
@@ -131,10 +134,10 @@
           <div class="col"><label>मागील वर्षाची शिल्लक (₹)</label><input id="prevBalance" type="number"/></div>
           <div class="col"><label>गणपती मूर्ती दात्याचे नाव</label><input id="ganpatiDonorName" placeholder="उदा. श्री. पाटील"/></div>
         </div>
-
+        
         <div class="row" style="margin-top:10px">
           <div class="col" style="display:flex;align-items:flex-end;gap:8px">
-            <button class="btn-primary" onclick="saveInfo()">Save Info</button>
+            <button class="btn-primary" onclick="saveGroupInfo()">Save Group Info</button>
             <button class="btn-secondary" onclick="navOpen('dashboard')">Back</button>
           </div>
         </div>
@@ -147,6 +150,42 @@
           <div>
             <div class="muted">Preview Ganpati Logo</div>
             <img id="previewGanpatiLogo" class="logo-preview" src="" alt="" />
+          </div>
+        </div>
+      </section>
+
+      <section id="page-aboutUs" class="card" style="display:none">
+        <h3>आमच्याबद्दल (About Us)</h3>
+        <div class="row" style="margin-top:10px">
+            <div class="col"><label>मंडळाची माहिती (About Group)</label><textarea id="groupAbout"></textarea></div>
+        </div>
+
+        <h4 style="margin-top:20px;">Report Group Name Customization</h4>
+        <div class="row">
+            <div class="col">
+                <label>Font Family</label>
+                <select id="reportGroupNameFont">
+                    <option value="Baloo Bhai 2, cursive">Baloo Bhai 2</option>
+                    <option value="Noto Sans Devanagari, sans-serif">Noto Sans Devanagari</option>
+                    <option value="Arial, sans-serif">Arial</option>
+                    <option value="Verdana, sans-serif">Verdana</option>
+                    <option value="Times New Roman, serif">Times New Roman</option>
+                </select>
+            </div>
+            <div class="col">
+                <label>Font Size (px)</label>
+                <input type="number" id="reportGroupNameSize" min="16" max="60" value="28"/>
+            </div>
+            <div class="col">
+                <label>Font Color</label>
+                <input type="color" id="reportGroupNameColor" value="#ff7043"/>
+            </div>
+        </div>
+
+        <div class="row" style="margin-top:10px">
+          <div class="col" style="display:flex;align-items:flex-end;gap:8px">
+            <button class="btn-primary" onclick="saveAboutUs()">Save About Us</button>
+            <button class="btn-secondary" onclick="navOpen('dashboard')">Back</button>
           </div>
         </div>
       </section>
@@ -226,14 +265,15 @@
       </section>
 
       <section id="page-report" class="card" style="display:none">
-        <div class="row">
+        <div class="row" style="align-items: center;">
           <div class="col">
             <img id="reportGroupLogo" class="logo-preview" src="" alt="Group Logo" />
           </div>
-          <div class="col">
+          <div class="col" style="flex:2">
             <h2 id="reportTitle"></h2>
             <div id="reportMoto" class="muted"></div>
             <div id="reportMeta" class="muted"></div>
+            <div id="reportAbout" class="muted"></div>
           </div>
           <div class="col">
             <img id="reportGanpatiLogo" class="logo-preview" src="" alt="Ganpati Logo" />
@@ -242,6 +282,9 @@
 
         <h4 style="margin-top:12px">कार्यकारी समिती</h4>
         <table id="reportCommittee"><thead><tr><th>नाव</th><th>पद</th></tr></thead><tbody></tbody></table>
+        
+        <h4 id="ganpatiDonorSection" style="margin-top:12px;display:none;">गणपती मूर्ती दात्याचे नाव</h4>
+        <div id="reportGanpatiDonorName"></div>
 
         <h4 style="margin-top:12px">आर्थिक सारांश</h4>
         <table id="reportMembersSummary"><thead><tr><th>वर्णन</th><th>रक्कम (₹)</th></tr></thead><tbody></tbody></table>
@@ -270,7 +313,7 @@ users = {
     masterMembers: ["A","B",...],
     records: {
       "2025": {
-         group: { est, prevBalance, moto, groupLogo (base64), ganpatiLogo (base64), ganpatiDonorName }, // Added ganpatiDonorName
+         group: { est, prevBalance, moto, groupLogo (base64), ganpatiLogo (base64), ganpatiDonorName, groupAbout, reportGroupNameFont, reportGroupNameSize, reportGroupNameColor },
          membersAmounts: { "A":100, "B":200, ... },
          committee: [{name,role},...],
          expenses: [{name,a1,a2,total},...],
@@ -302,7 +345,7 @@ function navOpen(page){
   // ensure app visible
   $('secApp').style.display = 'block';
   // hide all pages
-  ['page-dashboard','page-info','page-members','page-committee','page-expenses','page-signatures','page-report'].forEach(p=>$(p).style.display='none');
+  ['page-dashboard','page-groupInfo','page-aboutUs','page-members','page-committee','page-expenses','page-signatures','page-report'].forEach(p=>$(p).style.display='none');
   // show selected
   $(`page-${page}`).style.display = 'block';
   // highlight nav
@@ -310,14 +353,19 @@ function navOpen(page){
   document.querySelector(`#nav${capitalize(page)}`)?.classList.add('active');
   // specific renders
   if(page==='dashboard') renderYearsList();
-  if(page==='info') renderInfo();
+  if(page==='groupInfo') renderGroupInfo();
+  if(page==='aboutUs') renderAboutUs(); // Renamed from renderAbout()
   if(page==='members') renderMasterAndYearMembers();
   if(page==='committee') renderCommittee();
   if(page==='expenses') renderExpensesList();
   if(page==='signatures') renderSignRolesList();
   if(page==='report') renderReport();
 }
-function capitalize(s){ return s.charAt(0).toUpperCase() + s.slice(1); }
+function capitalize(s){ 
+    if (s === 'groupInfo') return 'GroupInfo';
+    if (s === 'aboutUs') return 'AboutUs'; // Special case for 'aboutUs'
+    return s.charAt(0).toUpperCase() + s.slice(1); 
+}
 
 /* ========== Auth & initial UI ========== */
 function doRegister(){
@@ -437,12 +485,13 @@ function loadYear(y){
   renderCommittee();
   renderExpensesList();
   renderSignRolesList();
-  renderInfo();
+  renderGroupInfo(); // Load Group Info
+  renderAboutUs(); // Load About Us
   renderYearsList();
 }
 
-/* ========== Info save (logos, moto) ========== */
-function renderInfo(){
+/* ========== Group Info functions ========== */
+function renderGroupInfo(){
   if(!currentUser) return;
   users = JSON.parse(localStorage.getItem('users')||'{}');
   const u = users[currentUser];
@@ -452,13 +501,13 @@ function renderInfo(){
     $('groupMoto').value = rec.group.moto || '';
     $('estYear').value = rec.group.est || '';
     $('prevBalance').value = rec.group.prevBalance || '';
-    $('ganpatiDonorName').value = rec.group.ganpatiDonorName || ''; // Load donor name
+    $('ganpatiDonorName').value = rec.group.ganpatiDonorName || '';
     if(rec.group.groupLogo) $('previewGroupLogo').src = rec.group.groupLogo;
     else $('previewGroupLogo').src = '';
     if(rec.group.ganpatiLogo) $('previewGanpatiLogo').src = rec.group.ganpatiLogo;
     else $('previewGanpatiLogo').src = '';
   } else {
-    $('groupMoto').value=''; $('estYear').value=''; $('prevBalance').value=''; $('ganpatiDonorName').value=''; // Clear donor name
+    $('groupMoto').value=''; $('estYear').value=''; $('prevBalance').value=''; $('ganpatiDonorName').value='';
     $('previewGroupLogo').src=''; $('previewGanpatiLogo').src='';
   }
   $('labelCurrentYear').textContent = currentYear;
@@ -471,7 +520,7 @@ function fileToBase64(file, cb){
   reader.readAsDataURL(file);
 }
 
-function saveInfo(){
+function saveGroupInfo(){
   if(!currentUser) return alert('Please login');
   users = JSON.parse(localStorage.getItem('users')||'{}');
   const u = users[currentUser];
@@ -483,7 +532,7 @@ function saveInfo(){
   rec.group.est = $('estYear').value || rec.group.est || '';
   rec.group.prevBalance = parseFloat($('prevBalance').value) || 0;
   rec.group.moto = $('groupMoto').value || rec.group.moto || '';
-  rec.group.ganpatiDonorName = $('ganpatiDonorName').value.trim() || ''; // Save donor name
+  rec.group.ganpatiDonorName = $('ganpatiDonorName').value.trim() || '';
 
   // process logo files asynchronously then save
   const gfile = $('groupLogoFile').files[0];
@@ -498,8 +547,8 @@ function saveInfo(){
     }
     users[currentUser] = u;
     localStorage.setItem('users', JSON.stringify(users));
-    alert('Info saved for '+currentYear);
-    renderInfo();
+    alert('Group Info saved for '+currentYear);
+    renderGroupInfo();
     // also update header group name
     $('headerRight').innerHTML = `<strong>${u.groupName}</strong> &nbsp; <button class="btn-secondary small" onclick="doLogout()">Logout</button>`;
     renderYearsList();
@@ -530,6 +579,49 @@ function saveInfo(){
     checkAndSave();
   }
 }
+
+/* ========== About Us functions ========== */
+function renderAboutUs(){ // Renamed from renderAbout()
+  if(!currentUser) return;
+  users = JSON.parse(localStorage.getItem('users')||'{}');
+  const u = users[currentUser];
+  const rec = u.records && u.records[currentYear] ? u.records[currentYear] : null;
+  if(rec && rec.group){
+    $('groupAbout').value = rec.group.groupAbout || '';
+    // Load report customization settings
+    $('reportGroupNameFont').value = rec.group.reportGroupNameFont || 'Baloo Bhai 2, cursive';
+    $('reportGroupNameSize').value = rec.group.reportGroupNameSize || '28';
+    $('reportGroupNameColor').value = rec.group.reportGroupNameColor || '#ff7043';
+  } else {
+    $('groupAbout').value = '';
+    // Set default values for report customization
+    $('reportGroupNameFont').value = 'Baloo Bhai 2, cursive';
+    $('reportGroupNameSize').value = '28';
+    $('reportGroupNameColor').value = '#ff7043';
+  }
+}
+
+function saveAboutUs(){ // Renamed from saveAbout()
+  if(!currentUser) return alert('Please login');
+  users = JSON.parse(localStorage.getItem('users')||'{}');
+  const u = users[currentUser];
+  u.records = u.records || {};
+  u.records[currentYear] = u.records[currentYear] || { group:{}, membersAmounts:{}, committee:[], expenses:[], signRoles:[] };
+  const rec = u.records[currentYear];
+  rec.group = rec.group || {};
+  rec.group.groupAbout = $('groupAbout').value.trim() || '';
+
+  // Save report customization settings
+  rec.group.reportGroupNameFont = $('reportGroupNameFont').value;
+  rec.group.reportGroupNameSize = $('reportGroupNameSize').value;
+  rec.group.reportGroupNameColor = $('reportGroupNameColor').value;
+
+  users[currentUser] = u;
+  localStorage.setItem('users', JSON.stringify(users));
+  alert('About Us info saved for '+currentYear); // Updated alert message
+  renderAboutUs(); // Renamed from renderAbout()
+}
+
 
 /* ========== Master Members and Year amounts ========= */
 function addMasterMember(){
@@ -661,7 +753,7 @@ function renderCommittee(){
   $('comMemberSelect').innerHTML = u.masterMembers.map(m=>`<option value="${escapeHtml(m)}">${escapeHtml(m)}</option>`).join('') || '<option value="">(no members)</option>';
   // show current year's committee
   const rec = (u.records && u.records[currentYear]) ? u.records[currentYear] : { committee:[] };
-  $('committeeList').innerHTML = (rec.committee||[]).map(c=>`<div class="row-item">${c.name} — ${c.role} <button class="small" onclick="removeCommittee(${rec.committee.indexOf(c)})">Delete</button></div>`).join('') || '<div class="muted">Committee माहित नाही</div>';
+  $('committeeList').innerHTML = (rec.committee||[]).map(c=>`<div class="row-item">${escapeHtml(c.name)} — ${escapeHtml(c.role)} <button class="small" onclick="removeCommittee(${rec.committee.indexOf(c)})">Delete</button></div>`).join('') || '<div class="muted">Committee माहित नाही</div>';
 }
 
 function removeCommittee(index){
@@ -697,7 +789,7 @@ function renderExpensesList(){
   if(!currentUser) return;
   users = JSON.parse(localStorage.getItem('users')||'{}');
   const rec = users[currentUser].records && users[currentUser].records[currentYear] ? users[currentUser].records[currentYear] : { expenses:[] };
-  $('expensesList').innerHTML = (rec.expenses||[]).map((e,i)=>`<div class="row-item">${e.name} — ₹${(e.total||0).toFixed(2)} <button class="small" onclick="removeExpense(${i})">Delete</button></div>`).join('') || '<div class="muted">Expenses none</div>';
+  $('expensesList').innerHTML = (rec.expenses||[]).map((e,i)=>`<div class="row-item">${escapeHtml(e.name)} — ₹${(e.total||0).toFixed(2)} <button class="small" onclick="removeExpense(${i})">Delete</button></div>`).join('') || '<div class="muted">Expenses none</div>';
 }
 
 function removeExpense(i){
@@ -730,7 +822,7 @@ function renderSignRolesList(){
   if(!currentUser) return;
   users = JSON.parse(localStorage.getItem('users')||'{}');
   const rec = users[currentUser].records && users[currentUser].records[currentYear] ? users[currentUser].records[currentYear] : { signRoles:[] };
-  $('signRolesList').innerHTML = (rec.signRoles||[]).map(s=>`<div class="row-item">${s} <button class="small" onclick="removeSignRole(${i})">Delete</button></div>`).join('') || '<div class="muted">No sign roles</div>';
+  $('signRolesList').innerHTML = (rec.signRoles||[]).map((s,i)=>`<div class="row-item">${escapeHtml(s)} <button class="small" onclick="removeSignRole(${i})">Delete</button></div>`).join('') || '<div class="muted">No sign roles</div>';
 }
 
 function removeSignRole(i){
@@ -748,21 +840,36 @@ function renderReport(){
   users = JSON.parse(localStorage.getItem('users')||'{}');
   const u = users[currentUser];
   const rec = u.records && u.records[currentYear] ? u.records[currentYear] : { group:{}, membersAmounts:{}, committee:[], expenses:[], signRoles:[] };
-  // logos and meta
-  $('reportTitle').innerHTML = `<span class="report-group-name">${escapeHtml(u.groupName || '')}</span> — ${currentYear}`;
+  
+  // Apply custom styles to report group name
+  const reportGroupNameSpan = document.createElement('span');
+  reportGroupNameSpan.className = 'report-group-name';
+  reportGroupNameSpan.textContent = escapeHtml(u.groupName || '');
+
+  // Apply user-defined styles
+  if (rec.group.reportGroupNameFont) {
+    reportGroupNameSpan.style.fontFamily = rec.group.reportGroupNameFont;
+  }
+  if (rec.group.reportGroupNameSize) {
+    reportGroupNameSpan.style.fontSize = rec.group.reportGroupNameSize + 'px';
+  }
+  if (rec.group.reportGroupNameColor) {
+    reportGroupNameSpan.style.color = rec.group.reportGroupNameColor;
+  }
+
+  $('reportTitle').innerHTML = ''; // Clear previous content
+  $('reportTitle').appendChild(reportGroupNameSpan);
+  $('reportTitle').innerHTML += ` — ${currentYear}`;
+
+
   $('reportMoto').textContent = rec.group && rec.group.moto ? rec.group.moto : '';
 
   let metaHtml = '';
   if (rec.group && rec.group.est) {
     metaHtml += `<span class="report-meta-item">स्थापना: ${rec.group.est}</span>`;
   }
-  if (rec.group && rec.group.prevBalance) {
-    metaHtml += `<span class="report-meta-item">मागील वर्षाची शिल्लक: ₹${rec.group.prevBalance}</span>`;
-  }
-  if (rec.group && rec.group.ganpatiDonorName) {
-    metaHtml += `<span class="report-meta-item">गणपती मूर्ती दाते: ${rec.group.ganpatiDonorName}</span>`;
-  }
   $('reportMeta').innerHTML = metaHtml;
+  $('reportAbout').textContent = rec.group && rec.group.groupAbout ? rec.group.groupAbout : '';
   
   $('reportGroupLogo').src = (rec.group && rec.group.groupLogo) ? rec.group.groupLogo : '';
   $('reportGanpatiLogo').src = (rec.group && rec.group.ganpatiLogo) ? rec.group.ganpatiLogo : '';
@@ -770,6 +877,15 @@ function renderReport(){
   // committee
   const tbodyC = $('reportCommittee').querySelector('tbody'); tbodyC.innerHTML = '';
   (rec.committee || []).forEach(c => { tbodyC.innerHTML += `<tr><td>${escapeHtml(c.name)}</td><td>${escapeHtml(c.role)}</td></tr>`; });
+
+  // Ganpati Donor Name after Committee
+  if (rec.group && rec.group.ganpatiDonorName) {
+    $('ganpatiDonorSection').style.display = 'block';
+    $('reportGanpatiDonorName').innerHTML = `<span style="font-size:16px;">${escapeHtml(rec.group.ganpatiDonorName)}</span>`;
+  } else {
+    $('ganpatiDonorSection').style.display = 'none';
+    $('reportGanpatiDonorName').innerHTML = '';
+  }
 
   // financial summary
   const tbodyMS = $('reportMembersSummary').querySelector('tbody'); tbodyMS.innerHTML = '';
@@ -822,7 +938,7 @@ function renderYearsList(){
     const card = document.createElement('div'); card.className='dash-card';
     card.innerHTML = `<div><strong>${y}</strong></div><div class="muted">Members: ${memCount}</div><div class="muted">Expenses: ₹${expTotal.toFixed(2)}</div>
       <div style="margin-top:8px">
-        <button class="small" onclick="loadYear('${y}'); navOpen('info');">Load</button> <button class="small" onclick="loadYearAndShow('${y}')">View Report</button>
+        <button class="small" onclick="loadYear('${y}'); navOpen('groupInfo');">Load</button> <button class="small" onclick="loadYearAndShow('${y}')">View Report</button>
         <button class="small" onclick="deleteYear('${y}')">Delete</button>
       </div>`;
     el.appendChild(card);
